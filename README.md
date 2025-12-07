@@ -81,7 +81,7 @@ Let's use a cloud provider called [Vultr](https://www.vultr.com/) to create virt
 
 - - - 
 
-## 3️⃣ Configure Wazuh
+## 3️⃣ Install Wazuh
 Wazuh is an open-source security platform that provides threat detection, monitoring, and incident response all in one platform.
 
 1. Secure Shell connect into the Wazuh virtual machine using its public IP address listed on the Vultr dashboard.
@@ -94,43 +94,75 @@ Wazuh is an open-source security platform that provides threat detection, monito
 
 3. Once Wazuh has finished installing, **copy the provided username and password** needed to access the Wazuh dashboard. I recommend writing these down in a notepad file in case you forget.
    
-4. We must first permit inbound traffic on TCP port 443 on the Wazuh server. Use the command `ufw allow 443` in the SSH session to enable this firewall rule.
+4. We must first permit inbound traffic on TCP port 443 on the Wazuh server. Use the command **`ufw allow 443`** in the SSH session to enable this firewall rule.
 
-5. Open up a web browser and navigate to the Wazuh dashboard using its public IP address. For example: `https://172.168.53.146`. Sign in using your obtained login information.
+5. Open up a web browser and navigate to the Wazuh dashboard using its public IP address. For example: **`https://172.168.53.146`**. **Sign in using your obtained login information.**
    - If accessing the dashboard fails, make sure that the server is up. You can check the server status using `systemctl status wazuh-manager.service`.
 
 <img width="2483" height="1278" alt="Screenshot 2025-11-01 130713" src="https://github.com/user-attachments/assets/4a62cade-971b-42f4-9536-a168c59603d5" />
 
 - - - 
 
-## 4️⃣ Configure TheHive
+## 4️⃣ Configure Wazuh
+
+- - - 
+
+## 5️⃣ Install & Configure TheHive
 TheHive is an open-source **Security Orchestration, Automation, and Response (SOAR)** platform designed to help security teams collaborate, investigate incidents, and manage cases efficiently.
 
-1. Secure Shell connect into TheHive virtual machine using its public IP address listed on the Vultr dashboard.
+1. Secure Shell (SSH) connect into TheHive virtual machine using its public IP address listed on the Vultr dashboard.
    - `ssh root@[TheHive public ip]`
   
-2. Open TheHive's website and follow the step-by-step instructions for setting up TheHive: [https://docs.strangebee.com/thehive/installation/installation-guide-linux-standalone-server/](https://docs.strangebee.com/thehive/installation/installation-guide-linux-standalone-server/)
-- Install Java Virtual Machine
+2. Open TheHive's website and follow the **step-by-step instructions** for setting up TheHive: [https://docs.strangebee.com/thehive/installation/installation-guide-linux-standalone-server/](https://docs.strangebee.com/thehive/installation/installation-guide-linux-standalone-server/)
 
 <img width="1366" height="1110" alt="Screenshot 2025-12-07 124900" src="https://github.com/user-attachments/assets/655473f2-bd3d-40ec-93c4-2d18aa9b0eda" />
 
-3. 
+3. Verify that **Java Virtual Machine**, **Elasticsearch**, **TheHive**, and **Apache Cassandra** are running. TheHive version I am using for this project is **5.5.7**.
+      - `java -version` to verify Java is installed and up to date.
+
+**Cassandra** is the **primary distributed NoSQL database** used by TheHive which stores all cases, alerts, tasks, and permissions.
+**Elasticsearch** is a **search and indexing engine** used by both Cassandra and TheHive as a search accelerator. It is thanks to its fast searching and filtering nature.
+
+4. For Cassandra, we'll have to configured its default settings. Navigate to its configuration file using **`nano /etc/cassandra/cassandra.yaml`** and changing the following values:
+  ```
+   cluster_name: '{VM name}'
+   listen_address: "{THEHIVE PUBLIC IP ADDRESS}"
+   rpc_address: "{THEHIVE PUBLIC IP ADDRESS}"
+   seed_provider: "{THEHIVE PUBLIC IP ADDRESS}}:7000"
+   ```
+*Save the configurations by using CTRL+X, Y, and then enter key.*
+
+5. Restart the Cassandra service (systemctl stop/start cassandra.service) and remove all extra files under its directory using **`rm -rf /var/lib/cassandra/*`**
+
+<img width="1047" height="264" alt="Screenshot 2025-12-07 165202" src="https://github.com/user-attachments/assets/446bd4db-fd22-4768-a969-df8d15cc546b" />
+
+6. For Elasticsearch, we'll have to configured its default settings. Navigate to its configuration file using **`nano /etc/elasticsearch/elasticsearch.yml`** and changing the following values:
+  ```
+   cluster_name: '{VM name}'
+   node.name: node-1
+   network.host: {THEHIVE PUBLIC IP ADDRESS}
+   http.port: 9200
+   cluster.initial_master_nodes: ["node-`"]
+   ```
+*Save the configurations by using CTRL+X, Y, and then enter key.*
+
+7. Restart the Elasticsearch service using **`systemctl stop elasticsearch`** and **`systemctl start elasticsearch`**.
+
+<img width="1122" height="243" alt="Screenshot 2025-12-07 165747" src="https://github.com/user-attachments/assets/06dcc022-39e1-43a0-84cb-7c4a9df58f88" />
+
+8. The final configuration we need to make is for TheHive which is in a directory that needs permissions to be changed.
 
 - - - 
 
-## 5️⃣ Install Mimikatz on your Virtualbox VM
+## 6️⃣ Install Mimikatz on your Virtualbox VM
 
 - - - 
 
-## 6️⃣ Create a custom detection rule on Wazuh
+## 7️⃣ Create a custom detection rule on Wazuh
 
 - - - 
 
-## 7️⃣ Create a SOAR Playbook using Shuffle
-
-- - - 
-
-## 8️⃣ 
+## 8️⃣ Create a SOAR Playbook using Shuffle
 
 - - -
 
