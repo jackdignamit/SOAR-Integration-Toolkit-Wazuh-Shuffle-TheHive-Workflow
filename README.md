@@ -1,4 +1,4 @@
-# SOC-Automation-with-Wazuh-Cortex-and-Shuffle
+# (WIP) SOC-Automation-with-Wazuh-Cortex-and-Shuffle (WIP) 
 *Completed: November 1, 2025*
 
 **description**
@@ -125,10 +125,10 @@ TheHive is an open-source **Security Orchestration, Automation, and Response (SO
 
 4. For Cassandra, we'll have to configured its default settings. Navigate to its configuration file using **`nano /etc/cassandra/cassandra.yaml`** and changing the following values:
   ```
-   cluster_name: '{VM name}'
-   listen_address: "{THEHIVE PUBLIC IP ADDRESS}"
-   rpc_address: "{THEHIVE PUBLIC IP ADDRESS}"
-   seed_provider: "{THEHIVE PUBLIC IP ADDRESS}}:7000"
+   cluster_name: {VM name}
+   listen_address: [THEHIVE PUBLIC IP ADDRESS]
+   rpc_address: [THEHIVE PUBLIC IP ADDRESS]
+   seed_provider: "{THEHIVE PUBLIC IP ADDRESS}:7000"
    ```
 *Save the configurations by using CTRL+X, Y, and then enter key.*
 
@@ -137,20 +137,40 @@ TheHive is an open-source **Security Orchestration, Automation, and Response (SO
 <img width="1047" height="264" alt="Screenshot 2025-12-07 165202" src="https://github.com/user-attachments/assets/446bd4db-fd22-4768-a969-df8d15cc546b" />
 
 6. For Elasticsearch, we'll have to configured its default settings. Navigate to its configuration file using **`nano /etc/elasticsearch/elasticsearch.yml`** and changing the following values:
-  ```
-   cluster_name: '{VM name}'
-   node.name: node-1
-   network.host: {THEHIVE PUBLIC IP ADDRESS}
-   http.port: 9200
-   cluster.initial_master_nodes: ["node-`"]
-   ```
+```cluster_name: {VM name}```
+```node.name: node-1```
+```network.host: [THEHIVE PUBLIC IP ADDRESS]```
+```http.port: 9200```
+```cluster.initial_master_nodes: ["node-1"]```
+   
 *Save the configurations by using CTRL+X, Y, and then enter key.*
 
-7. Restart the Elasticsearch service using **`systemctl stop elasticsearch`** and **`systemctl start elasticsearch`**.
+8. Restart the Elasticsearch service using **`systemctl stop elasticsearch`** and **`systemctl start elasticsearch`**.
 
 <img width="1122" height="243" alt="Screenshot 2025-12-07 165747" src="https://github.com/user-attachments/assets/06dcc022-39e1-43a0-84cb-7c4a9df58f88" />
 
-8. The final configuration we need to make is for TheHive which is in a directory that needs permissions to be changed.
+8. Before we can change TheHive's configuration file, we must change the directory TheHive uses from root to TheHive with `chown -R thehive:thehive /opt/thp`.
+
+9. Navigate to TheHive's configuration file using **`nano /etc/thehive/application.conf`** and change the following values:
+  
+  **db.janusgraph:**
+  ```
+   cluster_name: '{VM name}'
+   hostname: ["THEHIVE PUBLIC IP ADDRESS"]
+   ```
+ **index.search:**
+   ```
+   hostname: ["THEHIVE PUBLIC IP ADDRESS"]
+   ```
+ **Service Configuration:**
+  ```
+   application.baseUrl = "http://'{THEHIVE PUBLIC IP ADDRESS}:9000"
+   ```
+*Save the configurations by using CTRL+X, Y, and then enter key.*
+
+10. Restart TheHive and enable it using **`systemctl start thehive`** and **`systemctl enable thehive`**.
+
+<img width="1149" height="269" alt="Screenshot 2025-12-07 171748" src="https://github.com/user-attachments/assets/770e933f-c158-44da-8c36-2a9acc8c811d" />
 
 - - - 
 
