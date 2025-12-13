@@ -263,11 +263,11 @@ Custom rules ensure that alerts are triggered only for relevant, high-value even
 
 <img width="1110" height="806" alt="Screenshot 2025-11-01 142721" src="https://github.com/user-attachments/assets/fc132d95-4d0d-48f3-9f16-8f470935b0f2" />
 
-This rule searches for original file names of "mimikatz.exe" under `sysmon_event1`, aka process creations. If found, it triggers the rule and labels it with a description, a level of 15 (the highest), and a [MITRE ATT&CK](https://attack.mitre.org/) framework ID of T1003.
+### This rule searches for original file names of "mimikatz.exe" under `sysmon_event1`, aka process creations. If found, it triggers the rule and labels it with a description, a level of 15 (the highest), and a [MITRE ATT&CK](https://attack.mitre.org/) framework ID of T1003.
 
 <img width="2367" height="885" alt="Screenshot 2025-12-13 150029" src="https://github.com/user-attachments/assets/b831a66f-476d-482f-970c-f5f6b2667acd" />
 
-If you save and then rerun Mimikatz, it should immediately detect the file execution.
+### If you save and then rerun Mimikatz, it should immediately detect the file execution.
 
 <img width="2479" height="796" alt="Screenshot 2025-11-01 151417" src="https://github.com/user-attachments/assets/4b509552-bd80-412d-aacf-9df541d954ef" />
 
@@ -275,7 +275,7 @@ If you save and then rerun Mimikatz, it should immediately detect the file execu
 
 - - -
 
-## 9️⃣ Create a SOAR Playbook using Shuffle
+## 9️⃣ Setup Shuffle
 Shuffle is an open-source security orchestration, automation, and response (SOAR) platform used to help SOC teams automate and coordinate incident responses and manage everyday security tasks. We will utilize it receive alerts from our Wazuh manager, inform analysts and stakeholders, and perform responsive actions.
 
 1. To start, create a [Shuffle](https://shuffler.io/) account. Then, create a new workflow.
@@ -302,21 +302,79 @@ Shuffle is an open-source security orchestration, automation, and response (SOAR
   <img width="581" height="280" alt="Screenshot 2025-11-01 151611" src="https://github.com/user-attachments/assets/6b257ed9-9ef6-4bd1-aac4-afcf97de4d57" />
   <img width="580" height="837" alt="Screenshot 2025-11-01 151618" src="https://github.com/user-attachments/assets/a2a2fdab-a026-465f-b0fb-9817061fba8a" />
 
-Now that the webhook is setup, let's have it extract a SHA256 hash and run it through VirusTotal. 
+### Now that the webhook is setup, let's have it extract a SHA256 hash and run it through VirusTotal. 
 
-4. Drag the "Shuffle Tools" app to the playbook and set the "**Find actions**" field to **Regex capture group** with the regex being `SHA256=([0-9A-Fa-f]{64})`. Lastly, set **hashes** as the input data. 
+4. Drag the "Shuffle Tools" app to the workflow and set the "**Find actions**" field to **Regex capture group** with the regex being `SHA256=([0-9A-Fa-f]{64})`. Lastly, set **hashes** as the input data. 
 
 <img width="392" height="493" alt="Screenshot 2025-11-01 152049" src="https://github.com/user-attachments/assets/0a6db843-971c-472b-9fc1-2e735c338bb4" />
 
-5. Add a [VirusTotal](https://www.virustotal.com/gui/) app, create an account, and set your API key to authenticate the app. Configure VirusTotal to use only the list from the SHA-256 Hash app.
+5. Add a [VirusTotal](https://www.virustotal.com/gui/) app, create an account, and set your API key to authenticate the app. Configure VirusTotal to use only group_0 from the SHA-256 Hash app.
    
 <img width="1179" height="492" alt="Screenshot 2025-11-01 152642" src="https://github.com/user-attachments/assets/c5a9a658-113c-4c2e-9084-1de97fd83277" />
 <img width="412" height="1000" alt="Screenshot 2025-11-01 153421" src="https://github.com/user-attachments/assets/107e473e-1030-470b-ad8f-050f1f3d0813" />
 
-If you rerun Mimikatz, the alert should be funneled into the webhook and into Virustotal and the SHA256 Hasher.
+### If you rerun Mimikatz, the alert should be funneled into the webhook and into Virustotal and the SHA256 Hasher.
 
 <img width="582" height="436" alt="Screenshot 2025-11-01 152756" src="https://github.com/user-attachments/assets/b8bb3bb0-896b-4a03-a2c3-89e7b46f055a" />
-<img width="560" height="1027" alt="Screenshot 2025-11-01 153438" src="https://github.com/user-attachments/assets/7a9477d9-d374-4294-989a-7bf12cac64df" />
+<img width="560" height="1027" alt="Screenshot 2025-11-01 153520" src="https://github.com/user-attachments/assets/4e07d731-c92a-4284-ac5e-2df2a1b1c240" />
+
+- - -
+
+## 🔟 Configure TheHive and Detection Emails in Shuffle
+
+1. In Shuffle, add **TheHive** app to the workflow. Before we can attach it to the rest of our workflow, we need to create a Hive organization and user accounts.
+
+2. On TheHive dashboard, sign in and add a new organization.
+
+<img width="521" height="542" alt="Screenshot 2025-11-01 154106" src="https://github.com/user-attachments/assets/85f808d7-6549-4138-8bf9-e5b9783ca8fb" />
+
+3. Add two new users to the organization, a normal type account in the analyst profile and the other as a service type in the analyst profile.
+
+4. Create an API key for the service account and paste it in **TheHive** app in Shuffle. Set the url as your public IP and include the port.
+
+<img width="510" height="650" alt="Screenshot 2025-11-01 154342" src="https://github.com/user-attachments/assets/9ef2e5b6-ac62-450d-8efb-7cac35d16e09" />
+
+5. In Shuffle, set TheHive app to create an alert. Configure the body section with whatever information you want. I used the advanced tab to configure mine, with the settings found below:
+
+<img width="2052" height="852" alt="Screenshot 2025-11-01 161136" src="https://github.com/user-attachments/assets/3e019978-e880-4bd0-beca-474083514526" />
+
+```
+{
+  "description": "$exec.title",
+  "externallink": "${externallink}",
+  "flag": false,
+  "pap": 2,
+  "severity": "3",
+  "source": "$exec.pretext",
+  "sourceRef": "$exec.rule_id",
+  "status": "New",
+  "summary": "Mimikatz activity detected on host: $exec.text.win.system.computer",
+  "tags": ["T1003"],
+  "title": "$exec.title",
+  "tlp": "2",
+  "type": "internal"
+}
+```
+
+### When a Mimikatz instance is detected, TheHive will be notified and all its associated users.
+
+<img width="572" height="445" alt="Screenshot 2025-11-01 161119" src="https://github.com/user-attachments/assets/79740c0d-b78d-4daa-beea-113ae6299262" />
+<img width="2421" height="260" alt="Screenshot 2025-11-01 161353" src="https://github.com/user-attachments/assets/716a08c9-6fbb-47e0-b697-d0a9c6f4b8ac" />
+<img width="1127" height="740" alt="Screenshot 2025-11-01 162913" src="https://github.com/user-attachments/assets/e72403b9-21f4-4332-b7b2-56593f033fc7" />
+
+The last thing to setup for our SOAR workflow is an email notification about Wazuh alerts. 
+
+6. Drag an **email app** to the Shuffle workflow and connect it to the VirusTotal app.
+
+7. Specify recipients, a subject line, and a body.
+   
+<img width="590" height="305" alt="Screenshot 2025-11-01 162450" src="https://github.com/user-attachments/assets/44b4aaf4-cf1b-4392-ac7b-6f609d8edd12" />
+<img width="1964" height="50" alt="Screenshot 2025-11-01 162409" src="https://github.com/user-attachments/assets/59f74b9a-f935-4ab2-8d9d-dcf6618daec9" />
+<img width="1379" height="414" alt="Screenshot 2025-11-01 162422" src="https://github.com/user-attachments/assets/48d8074b-5b36-448c-8fec-e7deff49b2d1" />
+
+### Now our Wazuh, Shuffle, and TheHive automated workflow is complete!
+
+<img width="1228" height="530" alt="Screenshot 2025-11-01 162511" src="https://github.com/user-attachments/assets/89eb77f6-846c-4182-aa30-52b374124b4d" />
 
 - - -
 
