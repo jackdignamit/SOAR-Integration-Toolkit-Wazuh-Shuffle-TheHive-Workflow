@@ -10,7 +10,9 @@ All implementation, exploration, and documentation performed independently as pa
 - - - 
 
 # Project Overview
-In this project, I created a **modern, fully automated SOC workflow** that is designed to eliminate **human error** and **tedious tasks** in security operations. By utilizing open-source tools like **Wazuh (SIEM)**, **Shuffle (SOAR)**, and **TheHive (incident response and case management)**, my system detects threats, analyzes them, and informs analysts via emails without any human intervention. **Vultr** virtual machines are utilized to host these tools and create a vulnerable endpoint with credential-stealing malware **(Mimikatz)** that flags alerts in Wazuh. Wazuh's *detection and response* (D&R) rules are flagged and triggers the automated workflow in Shuffle via a webhook. The data is then enriched with threat intelligence using **VirusTotal**, a **SHA256 hash** is captured, emails are sent, and lastly creates a structured incident in TheHive for SOC analysts to investigate.
+In this project, I created a **fully automated, modern SOC workflow** that is designed to eliminate **human error** and **tedious tasks** in security operations. By utilizing open-source tools like **Wazuh (SIEM)**, **Shuffle (SOAR)**, and **TheHive (incident response and case management)**, my workflow detects threats, analyzes them, and informs analysts via emails without any human intervention. 
+
+Cloud-based virtual machines are utilized to host Wazuh and TheHive. A Virtualbox Windows 10 VM is used as a vulnerable endpoint with credential-stealing malware **(Mimikatz)** that notifies Wazuh agents using Sysmon logs. Wazuh's *detect and response* (D&R) rules are flagged and triggers the automated workflow in Shuffle via a webhook. The data is then enriched with threat intelligence using **VirusTotal**, a **SHA256 hash** is captured, emails are sent, and creates a structured incident in TheHive for SOC analysts to investigate.
 
 <img width="1228" height="530" alt="Screenshot 2025-11-01 162511" src="https://github.com/user-attachments/assets/dd1c6b16-713b-45cc-83fc-2562a0ef6193" />
 
@@ -32,16 +34,16 @@ In this project, I created a **modern, fully automated SOC workflow** that is de
 
 <img width="1510" height="847" alt="Screenshot 2025-12-06 124107" src="https://github.com/user-attachments/assets/b7873087-d643-477c-a858-b45039c126df" />
 
-1. ***Collect Endpoint Telemetry***   
+1. **Collect Endpoint Telemetry**   
    A Windows VM with Sysmon installed generates logs for potentially malicious activity.
    A credential theft tool called Mimikatz is ran, which triggers Wazuh agents on the endpoint to forward the detections to the Wazuh manager.
-2. ***Detection and Alerting (Wazuh)***  
+2. **Detection and Alerting (Wazuh)**  
    Wazuh acts as the central SIEM platform, ingesting logs from the endpoint and matching them to detection rules set to alert suspicious behavior. Alerts are generated when Mimikatz execution rules are flagged.
-3. ***Shuffle (SOAR) Orchestration***  
+3. **Shuffle (SOAR) Orchestration**  
    Wazuh then forwards alerts via a webhook to Shuffle.
    In Shuffle, a workflow parses relevant details such as SHA256 hashes to then be queried using external threat investigation tools such as Virustotal for reputation scoring.
    Additional workflow steps are conducted like sending email notifications to a SOC team, ensuring analysts are up-to-date and informed to investigate in TheHive.
-5. ***TheHive Case Creation and Management***  
+5. **TheHive Case Creation and Management**  
    Shuffle uses TheHive's API to create alerts or cases in TheHive for structured incident tracking. This makes sure that all incidents are cataloged and assigned to analysts for investigations.
 
 - - - 
@@ -384,7 +386,27 @@ The last thing to setup for our SOAR workflow is an email notification about Waz
 - - -
 
 # Key Skills Demonstrated
+1. **SIEM Setup & Management**
+   - Deploying and configuring Wazuh as a centralized platform for ingesting logs, monitoring, and alerting.
+   - Configured detect & response (D&R) rule in Wazuh dashboard to catch malicious process executions (Mimikatz.exe)
+2. **SOAR Workflow Development**
+   - Building automated workflows in Shuffle to handle alerts, parse data, integrate APIs, and alerting via emails.
+   - Reduce manual SOC workloads by automating very repetitive tasks
+   - Configured email notifications from Shuffle for informing Stakeholders or response teams
+3. **API Integration**
+   - Using REST APIs for VirusTotal and TheHive incident management and creation
+4. **Incident Response & Case Management**
+   - Utilizing TheHive for investigations and tracking by properly structuring security incidents
+5. **Endpoint Telemetry Configuration**
+   - Utilized two Vultr cloud-based virtual machines to host and configure Wazuh and TheHive.
+   - Hosted a VirtualBox VM as a Windows 10 endpoint
+   - Installed and configured Sysmon to capture log data
+   - Installed and configured Wazuh agents to capture Sysmon log data and funnel it to the Wazuh dashboard
+   - Using Mimikatz to simulate malicious behavior on a virtual machine
 
 - - - 
 
 # Conclusion
+This project successfully demonstrates how to build a robust, end-to-end incident response workflow using Wazuh, Shuffle, and TheHive. It showcases how to simulate a real-world threat using Mimikatz on a virtual machine, detecting its presence, and funneling security details from Sysmon into a Wazuh agent and then a dashboard. From there, it is enriched by Shuffle's automated response workflow which informs analysts and stakeholders via email about the detection. Lastly, the case is added to TheHive's case management platform which are then acted upon by analysts.
+
+This lab stands out as a learning platform and proof of concept for SIEM, SOAR, and case management. It clearly demonstrates the importance of automation in Cybersecurity due to its acceleration of detection and response times. This increase in efficiency reduces analyst fatigure and improves overall SOC productivity. From configuring endpoints and SIEM rules to designing a SOAR workflow with API connections, it showcases the practical integration challenges and processes needed to build such a system.
