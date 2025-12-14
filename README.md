@@ -412,3 +412,7 @@ The last thing to setup for our SOAR workflow is an email notification about Waz
 This project successfully demonstrates how to build a robust, end-to-end incident response workflow using Wazuh, Shuffle, and TheHive. It showcases how to simulate a real-world threat using Mimikatz on a virtual machine, detecting its presence, and funneling security details from Sysmon into a Wazuh agent and then a dashboard. From there, it is enriched by Shuffle's automated response workflow which informs analysts and stakeholders via email about the detection. Lastly, the case is added to TheHive's case management platform which are then acted upon by analysts.
 
 This lab stands out as a learning platform and proof of concept for SIEM, SOAR, and case management. It clearly demonstrates the importance of automation in Cybersecurity due to its acceleration of detection and response times. This increase in efficiency reduces analyst fatigue and improves overall SOC productivity. From configuring endpoints and SIEM rules to designing a SOAR workflow with API connections, it showcases the practical integration challenges and processes needed to build such a system.
+
+**Thank you for reading and checking out my project!**
+
+
