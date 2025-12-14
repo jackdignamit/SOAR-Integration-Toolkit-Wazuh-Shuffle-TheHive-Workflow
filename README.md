@@ -24,7 +24,7 @@ In this project, I created a **modern, fully automated SOC workflow** that is de
 | Mimikatz           | Open-source credential-extracting tool used to simulate malicious activity | [https://github.com/gentilkiwi/mimikatz](https://github.com/gentilkiwi/mimikatz) |
 | MITRE ATT&CK            | Knowledge base of adversary tactics, techniques, and procedures (TTP)  | [https://attack.mitre.org/](https://attack.mitre.org/) |
 | VirusTotal            | Malware analysis and file reputation checker  | [https://www.virustotal.com/gui/](https://www.virustotal.com/gui/) |
-| Virtual Machines        | Endpoint environment to run Mimikatz and test Wazuh EDR detection | [https://www.vultr.com/](https://www.vultr.com/) & [https://www.virtualbox.org/](https://www.virtualbox.org/) |
+| Virtual Machines        | Endpoint environment to run Mimikatz and test Wazuh EDR detection | [https://www.vultr.com/](https://www.vultr.com/), [https://www.virtualbox.org/](https://www.virtualbox.org/) |
 
 - - -
 
@@ -32,13 +32,17 @@ In this project, I created a **modern, fully automated SOC workflow** that is de
 
 <img width="1510" height="847" alt="Screenshot 2025-12-06 124107" src="https://github.com/user-attachments/assets/b7873087-d643-477c-a858-b45039c126df" />
 
-1. Collect endpoint events of malicious behavior:
-   
-2. Wazuh Manager triggers alerts:
-   
-3. Shuffle receives Wazuh Alerts & sends responsive actions:
-
-4. 
+1. ***Collect Endpoint Telemetry***   
+   A Windows VM with Sysmon installed generates logs for potentially malicious activity.
+   A credential theft tool called Mimikatz is ran, which triggers Wazuh agents on the endpoint to forward the detections to the Wazuh manager.
+2. ***Detection and Alerting (Wazuh)***  
+   Wazuh acts as the central SIEM platform, ingesting logs from the endpoint and matching them to detection rules set to alert suspicious behavior. Alerts are generated when Mimikatz execution rules are flagged.
+3. ***Shuffle (SOAR) Orchestration***  
+   Wazuh then forwards alerts via a webhook to Shuffle.
+   In Shuffle, a workflow parses relevant details such as SHA256 hashes to then be queried using external threat investigation tools such as Virustotal for reputation scoring.
+   Additional workflow steps are conducted like sending email notifications to a SOC team, ensuring analysts are up-to-date and informed to investigate in TheHive.
+5. ***TheHive Case Creation and Management***  
+   Shuffle uses TheHive's API to create alerts or cases in TheHive for structured incident tracking. This makes sure that all incidents are cataloged and assigned to analysts for investigations.
 
 - - - 
 # 🔢 Step-by-Step Walkthrough 🔢
