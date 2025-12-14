@@ -4,8 +4,8 @@
 **This project demonstrates a fully integrated security operations center (SOC) automation workflow using Wazuh, TheHive, and Shuffle for *security orchestration, automation, and response* (SOAR). 
 The goal was to build an end‑to‑end incident response pipeline that detects suspicious activity, performs automated triage, provides event data, and informs analysts.**
 
-Tutorial by [MyDFIR](https://www.youtube.com/@MyDFIR).  
-All implementation, exploration, and documentation performed independently as part of my cybersecurity learning journey.
+Based on a tutorial by [MyDFIR](https://www.youtube.com/@MyDFIR).  
+All implementation, exploration, and documentation conducted independently as part of my cybersecurity learning journey.
 
 - - - 
 
