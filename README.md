@@ -1,7 +1,7 @@
-# (WIP) SOC Automation with Wazuh, Cortex, and Shuffle
+# (WIP) SOC Automation with Wazuh, TheHive, and Shuffle
 *Completed: November 1, 2025*
 
-**description**
+**This project demonstrates a full security operations center (SOC) automation workflow using Wazuh, TheHive, and Shuffle for security orchestration, automation, and response (SOAR).**
 
 Tutorial by [MyDFIR](https://www.youtube.com/@MyDFIR).  
 All implementation, exploration, and documentation performed independently as part of my cybersecurity learning journey.
