@@ -1,4 +1,4 @@
-# (WIP) SOC Automation with Wazuh, TheHive, and Shuffle
+# SOC Automation with Wazuh, TheHive, and Shuffle
 *Completed: November 1, 2025*
 
 **This project demonstrates a fully integrated security operations center (SOC) automation workflow using Wazuh, TheHive, and Shuffle for *security orchestration, automation, and response* (SOAR). 
@@ -10,7 +10,7 @@ All implementation, exploration, and documentation performed independently as pa
 - - - 
 
 # Project Overview
-In this project, I created a **fully automated, modern SOC workflow** that is designed to eliminate **human error** and **tedious tasks** in security operations. By utilizing open-source tools like **Wazuh (SIEM)**, **Shuffle (SOAR)**, and **TheHive (incident response and case management)**, my workflow detects threats, analyzes them, and informs analysts via emails without any human intervention. 
+In this project, I created a **fully automated, modern SOC workflow** that is designed to significantly reduce **human error** and **tedious tasks** in security operations. By utilizing open-source tools like **Wazuh (SIEM)**, **Shuffle (SOAR)**, and **TheHive (incident response and case management)**, my workflow detects threats, analyzes them, and informs analysts via emails without any human intervention. 
 
 Cloud-based virtual machines are utilized to host Wazuh and TheHive. A Virtualbox Windows 11 VM is used as a vulnerable endpoint with credential-stealing malware **(Mimikatz)** that notifies Wazuh agents using Sysmon logs. Wazuh's *detect and response* (D&R) rules are flagged and trigger the automated workflow in Shuffle via a webhook. The data is then enriched with threat intelligence using **VirusTotal**, a **SHA256 hash** is captured, emails are sent, and creates a structured incident in TheHive for SOC analysts to investigate.
 
@@ -43,7 +43,7 @@ Cloud-based virtual machines are utilized to host Wazuh and TheHive. A Virtualbo
    Wazuh then forwards alerts via a webhook to Shuffle.
    In Shuffle, a workflow parses relevant details such as SHA256 hashes to then be queried using external threat investigation tools such as Virustotal for reputation scoring.
    Additional workflow steps are conducted like sending email notifications to a SOC team, ensuring analysts are up to date and able to investigate in TheHive.
-5. **TheHive Case Creation and Management**  
+4. **TheHive Case Creation and Management**  
    Shuffle uses TheHive's API to create alerts or cases in TheHive for structured incident tracking. This makes sure that all incidents are cataloged and assigned to analysts for investigations.
 
 - - - 
@@ -174,7 +174,7 @@ cluster.initial_master_nodes: ["node-1"]
    
 *Save the configurations by using CTRL+X, Y, and then enter key.*
 
-8. Restart the Elasticsearch service using **`systemctl stop elasticsearch`** and **`systemctl start elasticsearch`**.
+7. Restart the Elasticsearch service using **`systemctl stop elasticsearch`** and **`systemctl start elasticsearch`**.
 
 <img width="1122" height="243" alt="Screenshot 2025-12-07 165747" src="https://github.com/user-attachments/assets/06dcc022-39e1-43a0-84cb-7c4a9df58f88" />
 
